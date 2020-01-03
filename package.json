@@ -3,15 +3,16 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "export MapboxAccessToken=pk.eyJ1IjoieXVnYW5rIiwiYSI6ImNrNHd0b3RlbzA3bXgzbW15bHI2dngyc3cifQ.lHOjiimxgeVIsDK4A29ivA &&
-     webpack-dev-server --progress --hot --open",
+    "start": "webpack-dev-server --progress --hot --open",
     "start-local": "webpack-dev-server --env.local --progress --hot --open",
-    "build": "webpack -p"
+    "build": "webpack -p",
+    "heroku-postbuild": "npm run build"
   },
   "dependencies": {
     "@deck.gl/core": "^7.0.0-beta",
     "@deck.gl/layers": "^7.0.0-beta",
-    "mapbox-gl": "~0.53.0"
+    "mapbox-gl": "~0.53.0",
+    "express": "^4.17.1"
   },
   "devDependencies": {
     "webpack": "^4.20.2",
