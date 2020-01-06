@@ -1,18 +1,21 @@
 import {Deck} from '@deck.gl/core';
-import {GeoJsonLayer, ArcLayer} from '@deck.gl/layers';
+import {GeoJsonLayer, ArcLayer, ScatterplotLayer} from '@deck.gl/layers';
 import mapboxgl from 'mapbox-gl';
 
 // source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
 const AIR_PORTS =
-  'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson';
+  'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/website/bart-stations.json';
 
 const INITIAL_VIEW_STATE = {
-  latitude: 51.47,
-  longitude: 0.45,
-  zoom: 4,
+  longitude: -73.935242,
+  latitude: 40.730610,
+  zoom: 12,
   bearing: 0,
   pitch: 30
 };
+
+const MALE_COLOR = [0, 128, 255];
+const FEMALE_COLOR = [255, 0, 128];
 
 // Set your mapbox token here
 mapboxgl.accessToken = process.env.MapboxAccessToken; // eslint-disable-line
@@ -43,33 +46,13 @@ export const deck = new Deck({
     });
   },
   layers: [
-    new GeoJsonLayer({
-      id: 'airports',
-      data: AIR_PORTS,
-      // Styles
-      filled: true,
-      pointRadiusMinPixels: 2,
-      opacity: 1,
-      pointRadiusScale: 2000,
-      getRadius: f => 11 - f.properties.scalerank,
-      getFillColor: [200, 0, 80, 180],
-      // Interactive props
-      pickable: true,
-      autoHighlight: true,
-      onClick: info =>
-        // eslint-disable-next-line
-        info.object && alert(`${info.object.properties.name} (${info.object.properties.abbrev})`)
-    }),
-    new ArcLayer({
-      id: 'arcs',
-      data: AIR_PORTS,
-      dataTransform: d => d.features.filter(f => f.properties.scalerank < 4),
-      // Styles
-      getSourcePosition: f => [-0.4531566, 51.4709959], // London
-      getTargetPosition: f => f.geometry.coordinates,
-      getSourceColor: [0, 128, 200],
-      getTargetColor: [200, 0, 80],
-      getWidth: 1
+    new ScatterplotLayer({
+      id: 'scatter-plot',
+      data: 'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/scatterplot/manhattan.json',
+      radiusScale: 10,
+      radiusMinPixels: 0.5,
+      getPosition: d => [d[0], d[1], 0],
+      getColor: d => (d[2] === 1 ? MALE_COLOR : FEMALE_COLOR)
     })
   ]
 });
